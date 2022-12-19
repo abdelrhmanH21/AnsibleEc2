@@ -1,2 +1,2 @@
 [all]
-centosinstance ansible_ssh_host=54.157.252.231
+ansible_ssh_host=54.157.252.231
