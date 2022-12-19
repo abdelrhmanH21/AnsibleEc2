@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  configure_infrastructure2: 
+  configure_infrastructure: 
     docker:
       - image: python:3.7-alpine3.11
     steps:
@@ -14,8 +14,8 @@ jobs:
             # Install Ansible
       - run:
           name: Run Playbook and Configure server
-          command: ansible-playbook inventory main-remote.yml
+          command: ansible-playbook -i inventory main-remote.yml
 workflows:
   my_workflow:
       jobs:
-        - configure_infrastructure2
+        - configure_infrastructure
