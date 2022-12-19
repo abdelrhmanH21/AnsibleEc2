@@ -14,7 +14,7 @@ jobs:
             # Install Ansible
       - run:
           name: Run Playbook and Configure server
-          command: sudo ansible-playbook -i inventory main-remote.yml
+          command: ansible-playbook inventory main-remote.yml
 workflows:
   my_workflow:
       jobs:
