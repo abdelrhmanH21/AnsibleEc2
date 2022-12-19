@@ -13,6 +13,10 @@ jobs:
           command: apk add --update ansible
             # Install Ansible
       - run:
+          name: protect file
+          command: |
+            chmod 400 udacity.pem
+      - run:
           name: Run Playbook and Configure server
           command: |
             ansible-playbook -i inventory.txt playbook.yml
