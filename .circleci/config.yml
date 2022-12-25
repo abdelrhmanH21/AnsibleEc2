@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   configure_infrastructure: 
     docker:
-      - image: python:3.7-alpine3.11
+      - image: cimg/python:3.10 
     steps:
       - checkout
       - add_ssh_keys:
@@ -10,7 +10,7 @@ jobs:
           fingerprints: ["24:12:2a:03:f0:6a:f2:de:45:08:49:8f:50:9e:a8:5f"] 
       - run:
           name: Install Ansible
-          command: apk add --update ansible
+          command: pip install ansible
             # Install Ansible
       - run:
           name: protect file
@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Run Playbook and Configure server
           command: |
-            ansible-playbook -i inventory.txt playbook.yml
+            ansible-playbook -i inventory playbook.yml
 workflows:
   my_workflow:
       jobs:
