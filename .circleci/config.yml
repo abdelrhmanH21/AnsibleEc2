@@ -10,8 +10,7 @@ jobs:
           fingerprints: ["24:12:2a:03:f0:6a:f2:de:45:08:49:8f:50:9e:a8:5f"] 
       - run:
           name: Install Ansible
-          command: apk add --update ansible
-
+          command: pip install ansible
             # Install Ansible
       - run:
           name: protect file
