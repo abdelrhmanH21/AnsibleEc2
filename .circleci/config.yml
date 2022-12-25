@@ -1,22 +1,26 @@
 version: 2.1
 jobs:
-  smoke_test:
+  configure_infrastructure: 
     docker:
-      - image: alpine:latest
+      - image: cimg/python:3.10 
     steps:
-      - run: apk add --update curl
+      - checkout
+      - add_ssh_keys:
+          # You can get this ID in the section where you registered the SSH Key
+          fingerprints: ["24:12:2a:03:f0:6a:f2:de:45:08:49:8f:50:9e:a8:5f"] 
       - run:
-        name: smoke test
-        command: |
-          URL="https://blog.udacity.com/"
-          # Test if website exists
-          if curl -s --head ${URL} 
-          then
-            return 0
-          else
-            return 1
-          fi
+          name: Install Ansible
+          command: pip install ansible
+            # Install Ansible
+      - run:
+          name: protect file
+          command: |
+            chmod 400 udacity.pem
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+            ansible-playbook -i inventory playbook.yml
 workflows:
   my_workflow:
       jobs:
-        - smoke_test
+        - configure_infrastructure
