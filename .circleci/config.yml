@@ -1,25 +1,5 @@
 version: 2.1
 jobs:
-  configure_infrastructure: 
-    docker:
-      - image: cimg/python:3.10 
-    steps:
-      - checkout
-      - add_ssh_keys:
-          # You can get this ID in the section where you registered the SSH Key
-          fingerprints: ["24:12:2a:03:f0:6a:f2:de:45:08:49:8f:50:9e:a8:5f"] 
-      - run:
-          name: Install Ansible
-          command: pip install ansible
-            # Install Ansible
-      - run:
-          name: protect file
-          command: |
-            chmod 400 udacity.pem
-      - run:
-          name: Run Playbook and Configure server
-          command: |
-            ansible-playbook -i inventory playbook.yml
   smoke_test:
     docker:
       - image: alpine:latest
@@ -39,5 +19,4 @@ jobs:
 workflows:
   my_workflow:
       jobs:
-        - configure_infrastructure
         - smoke_test
