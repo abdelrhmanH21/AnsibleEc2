@@ -1,26 +1,37 @@
 version: 2.1
-jobs:
-  configure_infrastructure: 
-    docker:
-      - image: cimg/python:3.10 
+commands:
+  destroy_environment:
     steps:
-      - checkout
-      - add_ssh_keys:
-          # You can get this ID in the section where you registered the SSH Key
-          fingerprints: ["24:12:2a:03:f0:6a:f2:de:45:08:49:8f:50:9e:a8:5f"] 
       - run:
-          name: Install Ansible
-          command: pip install ansible
-            # Install Ansible
-      - run:
-          name: protect file
+          name: Destroy environment
+          # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+          # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+          when: on_fail
           command: |
-            chmod 400 udacity.pem
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
+jobs:
+  create_infrastructure: 
+  docker:
+    - image: amazon/aws-cli
+  steps:
+    - checkout
+    - run:
+        name: Create Cloudformation Stack
+        command: |
+          aws cloudformation deploy \
+            --template-file template.yml \
+            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} \
+            --region us-east-1
+  smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
       - run:
-          name: Run Playbook and Configure server
-          command: |
-            ansible-playbook -i inventory playbook.yml
+          name: Test job
+          # Fail the job intentionally to simulate an error.
+          command:  return 1
+      - destroy_environment  
 workflows:
   my_workflow:
       jobs:
-        - configure_infrastructure
+        - create_infrastructure
